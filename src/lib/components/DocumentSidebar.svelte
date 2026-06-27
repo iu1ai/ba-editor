@@ -2,37 +2,25 @@
     import { Plus, FileText } from "lucide-svelte";
     import { supabase } from "$lib/supabase/client";
     import { t } from "svelte-i18n";
-
-    let documents = $state([]);
+    import { docStore } from "$lib/stores/documents.svelte";
 
     $effect(() => {
-        async function load() {
-            const { data } = await supabase
-                .from("documents")
-                .select("id, title")
-                .order("created_at", { ascending: false });
-            documents = data || [];
-        }
-        load();
+        if (docStore.list.length === 0) docStore.load();
     });
 
     async function addDocument() {
-        // Достаем название из i18n (замени 'documents.untitled' на свой ключ)
         const defaultTitle = $t("documents.untitled", { default: "Untitled" });
 
         const { data, error } = await supabase
             .from("documents")
             .insert([
-                {
-                    title: defaultTitle,
-                    content: { type: "doc", content: [] },
-                },
+                { title: defaultTitle, content: { type: "doc", content: [] } },
             ])
-            .select("id, title") // Сразу забираем сгенерированный UUID id обратно
+            .select("id, title")
             .single();
 
         if (!error && data) {
-            documents = [data, ...documents];
+            docStore.add(data); // Пушим в стор
         }
     }
 </script>
@@ -50,7 +38,7 @@
 </div>
 
 <nav class="flex-1 overflow-y-auto">
-    {#each documents as doc}
+    {#each docStore.list as doc}
         <a
             href="/docs/{doc.id}"
             class="flex items-center gap-3 p-2 text-sm rounded transition-colors hover:bg-slate-400 hover:text-black"

@@ -5,6 +5,7 @@
     import Editor from "$lib/components/Editor.svelte";
     import DocumentSidebar from "$lib/components/DocumentSidebar.svelte";
     import StatusBar from "$lib/components/StatusBar.svelte";
+    import { docStore } from "$lib/stores/documents.svelte";
 
     let doc = $state(null);
     let isSaveOrDelete = $state(false);
@@ -53,11 +54,33 @@
         if (!doc) return;
 
         isSaveOrDelete = true;
-        await supabase
+        const { error } = await supabase
             .from("documents")
             .delete()
-            .eq("id", doc.id)
-            .then(() => (isSaveOrDelete = false));
+            .eq("id", doc.id);
+
+        if (!error) {
+            docStore.remove(doc.id); // Удаляем из стора
+            doc = null;
+        }
+
+        isSaveOrDelete = false;
+    }
+
+    async function handleChangeName(title: string) {
+        if (!doc) return;
+
+        isSaveOrDelete = true;
+        const { error } = await supabase
+            .from("documents")
+            .update({ title })
+            .eq("id", doc.id);
+
+        if (!error) {
+            doc.title = title;
+            docStore.updateTitle(doc.id, title); // Обновляем в сторе
+        }
+        isSaveOrDelete = false;
     }
 </script>
 
@@ -77,7 +100,7 @@
                 {/key}
             {:else}
                 <div class="p-10 text-slate-400">
-                    Выберите документ для редактирования
+                    <!-- Loading Spinner -->
                 </div>
             {/if}
 
@@ -87,6 +110,7 @@
                         {isSaveOrDelete}
                         onSave={handleSave}
                         onDelete={handleDelete}
+                        onChangeName={handleChangeName}
                         {lastSave}
                     />
                 </div>
