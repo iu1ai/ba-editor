@@ -6,9 +6,8 @@
 	import { goto } from "$app/navigation";
 	import { auth } from "$lib/stores/auth";
 	import { i18nInit, t, locale } from "$lib/i18n";
-	import LanguageSelector from "$lib/components/LanguageSelector.svelte";
+	import { uiStore } from "$lib/stores/ui.svelte";
 
-	let drawerOpen = $state(false);
 	let { children } = $props();
 
 	$effect(() => {
@@ -66,39 +65,35 @@
 	</div>
 {:then}
 	<div class="drawer">
-		<input
-			id="drawer-toggle"
-			type="checkbox"
-			class="drawer-toggle"
-			bind:checked={drawerOpen}
-		/>
 		<div class="drawer-content flex flex-col">
 			<!-- Navbar -->
 			{#if $auth.user}
 				<div class="navbar bg-base-100 shadow-lg sticky top-0 z-9">
-					<!-- 
-						<div class="flex-none">
-							<label
-								for="drawer-toggle"
-								class="btn btn-square btn-ghost drawer-button"
-							>
-								<svg
-									xmlns="http://www.w3.org/2000/svg"
-									fill="none"
-									viewBox="0 0 24 24"
-									class="inline-block h-5 w-5 stroke-current"
-								>
-									<path
-										stroke-linecap="round"
-										stroke-linejoin="round"
-										stroke-width="2"
-										d="M4 6h16M4 12h16M4 18h16"
-									></path>
-								</svg>
-							</label>
-						</div>
-					
-					-->
+					<button
+						onclick={() =>
+							(uiStore.isSidebarOpen = !uiStore.isSidebarOpen)}
+						aria-label="Open Sidebar"
+						class="p-2 border rounded-lg transition-all border border-transparent
+         bg-slate-200 text-slate-900 shadow-inner hidden max-[1024px]:flex items-center justify-center transition-colors mr-4"
+					>
+						<svg
+							xmlns="http://www.w3.org/2000/svg"
+							width="20"
+							height="20"
+							viewBox="0 0 24 24"
+							fill="none"
+							stroke="currentColor"
+							stroke-width="2"
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							><line x1="4" x2="20" y1="12" y2="12" /><line
+								x1="4"
+								x2="20"
+								y1="6"
+								y2="6"
+							/><line x1="4" x2="20" y1="18" y2="18" /></svg
+						>
+					</button>
 					<div class="flex-1 p-2">
 						<h1>BA Workspace Editor</h1>
 					</div>
@@ -113,30 +108,5 @@
 				{@render children()}
 			</main>
 		</div>
-
-		<!-- Drawer Sidebar 
-		<div class="drawer-side">
-			<label for="drawer-toggle" class="drawer-overlay"></label>
-			<ul
-				class="menu p-4 w-80 min-h-full bg-base-200 text-base-content z-60"
-			>
-				{#if $auth.user}
-					<li><a href="/">{$t("nav.home")}</a></li>
-					<li>
-						<button
-							onclick={async () => {
-								await auth.signOut();
-								goto("/login");
-							}}
-						>
-							{$t("nav.logout")}
-						</button>
-					</li>
-				{:else}
-					<li><a href="/login">{$t("nav.login")}</a></li>
-				{/if}
-			</ul>
-		</div>
-	-->
 	</div>
 {/await}
