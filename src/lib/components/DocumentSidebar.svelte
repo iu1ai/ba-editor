@@ -27,7 +27,7 @@
 
 <div class="p-4 flex items-center justify-between">
     <span class="text-xs font-bold text-slate-400 tracking-wider"
-        >Мои файлы</span
+        >{$t('sidebar.my_documents')}</span
     >
     <button
         onclick={addDocument}

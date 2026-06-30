@@ -7,6 +7,8 @@
     import StatusBar from "$lib/components/StatusBar.svelte";
     import { docStore } from "$lib/stores/documents.svelte";
     import { uiStore } from "$lib/stores/ui.svelte";
+    import { t } from "$lib/i18n";
+    import { goto } from "$app/navigation";
 
     let doc = $state(null);
     let isSaveOrDelete = $state(false);
@@ -21,11 +23,17 @@
                 return;
             }
 
-            const { data } = await supabase
+            const { data, error } = await supabase
                 .from("documents")
                 .select("*")
                 .eq("id", id)
                 .single();
+
+            if (error || !data) {
+                doc = null;
+                goto("/"); // Редирект на главную страницу
+                return;
+            }
 
             doc = data;
             currentJson = data.content;
@@ -62,6 +70,7 @@
 
         if (!error) {
             docStore.remove(doc.id); // Удаляем из стора
+            goto("/");
             doc = null;
         }
 
@@ -97,7 +106,7 @@
 
         <aside
             class="
-            w-72 shrink-0 border-r border-slate-200 h-full overflow-y-auto transition-transform duration-300 z-40
+            w-72 shrink-0 border-r-2 border-slate-200 h-full overflow-y-auto transition-transform duration-300 z-40
             max-[1024px]:fixed max-[1024px]:top-16 max-[1024px]:left-0 bg-base-100
             {uiStore.isSidebarOpen
                 ? 'max-[1024px]:translate-x-0'
@@ -115,10 +124,6 @@
                         onUpdate={(json) => (currentJson = json)}
                     />
                 {/key}
-            {:else}
-                <div class="p-10 max-[1024px]:pl-16 text-slate-400">
-                    Выберите документ для редактирования
-                </div>
             {/if}
 
             {#if doc}

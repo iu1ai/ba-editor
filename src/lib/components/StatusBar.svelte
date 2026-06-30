@@ -1,4 +1,6 @@
 <script>
+    import { t } from "svelte-i18n";
+
     let { isSaveOrDelete, lastSave, onSave, onDelete, onChangeName } = $props();
 
     // Раздельные состояния для двух модалок
@@ -29,10 +31,10 @@
     <div class="flex items-center gap-4">
         <span class="text-xs text-slate-500 font-medium">
             {#if isSaveOrDelete}
-                Сохранение...
+                {$t("status_bar.saving2")}
             {:else}
                 {lastSave
-                    ? `Все изменения сохранены (${formatTime(lastSave)})`
+                    ? $t("status_bar.saving") + ` (${formatTime(lastSave)})`
                     : ""}
             {/if}
         </span>
@@ -41,7 +43,9 @@
             disabled={isSaveOrDelete}
             class="px-5 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 disabled:bg-slate-300 transition-all shadow-sm"
         >
-            {isSaveOrDelete ? "Сохраняю..." : "Обновить"}
+            {isSaveOrDelete
+                ? $t("status_bar.saving_2")
+                : $t("status_bar.update")}
         </button>
     </div>
 
@@ -51,7 +55,7 @@
             disabled={isSaveOrDelete}
             class="px-5 py-2 bg-slate-200 text-black text-sm font-medium rounded-lg hover:bg-slate-100 transition-all shadow-sm"
         >
-            Переименовать
+            {$t("status_bar.rename")}
         </button>
 
         <button
@@ -59,7 +63,7 @@
             disabled={isSaveOrDelete}
             class="px-5 py-2 bg-slate-200 text-black text-sm font-medium rounded-lg hover:bg-slate-100 transition-all shadow-sm"
         >
-            Удалить
+            {$t("status_bar.delete")}
         </button>
     </div>
 </div>
@@ -72,12 +76,12 @@
             class="bg-white rounded-xl shadow-xl p-6 max-w-sm w-full border border-slate-100"
         >
             <h3 class="text-base font-semibold text-slate-900">
-                Переименовать документ
+                {$t("status_bar.rename_document")}
             </h3>
             <input
                 bind:value={newTitle}
                 type="text"
-                placeholder="Новое название"
+                placeholder={$t("status_bar.rename_placeholder")}
                 class="w-full text-slate-900 text-sm p-3 border border-slate-200 rounded-lg mt-3 focus:outline-none focus:border-blue-500"
                 onkeydown={(e) => e.key === "Enter" && handleRename()}
             />
@@ -89,14 +93,14 @@
                     }}
                     class="px-4 py-2 text-sm font-medium text-slate-700 bg-slate-100 rounded-lg hover:bg-slate-200"
                 >
-                    Отмена
+                    {$t("m.close")}
                 </button>
                 <button
                     onclick={handleRename}
                     disabled={!newTitle.trim()}
                     class="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 disabled:bg-slate-300"
                 >
-                    Сохранить
+                    {$t("status_bar.rename")}
                 </button>
             </div>
         </div>
@@ -111,15 +115,17 @@
             class="bg-white rounded-xl shadow-xl p-6 max-w-sm w-full border border-slate-100"
         >
             <h3 class="text-base font-semibold text-slate-900">
-                Удалить этот документ?
+                {$t("status_bar.delete_question")}
             </h3>
-            <p class="text-sm text-slate-500 mt-2">Это действие необратимо.</p>
+            <p class="text-sm text-slate-500 mt-2">
+                {$t("status_bar.delete_note")}
+            </p>
             <div class="flex justify-end gap-3 mt-6">
                 <button
                     onclick={() => (showDeleteConfirm = false)}
                     class="px-4 py-2 text-sm font-medium text-slate-700 bg-slate-100 rounded-lg hover:bg-slate-200"
                 >
-                    Нет
+                    {$t("status_bar.delete_no")}
                 </button>
                 <button
                     onclick={() => {
@@ -128,7 +134,7 @@
                     }}
                     class="px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-lg hover:bg-red-700"
                 >
-                    Да, удалить
+                    {$t("status_bar.delete_yes")}
                 </button>
             </div>
         </div>

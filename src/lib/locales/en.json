@@ -21,6 +21,34 @@
     "home": "Home",
     "logout": "Log Out",
     "login": "Login",
-    "register": "Register"
+    "register": "Register",
+    "settings": "Settings"
+  },
+  "docs": {
+    "select_document": "Select a document to edit"
+  },
+  "m": {
+    "close": "Close",
+    "save": "Save"
+  },
+  "sidebar": {
+    "my_documents": "My documents"
+  },
+  "status_bar": {
+    "saving": "All changes saved",
+    "saving2": "Saving...",
+    "update": "Update",
+    "rename": "Rename",
+    "delete": "Delete",
+    "rename_document": "Rename this document",
+    "delete_question": "Delete this document?",
+    "delete_no":"No",
+    "delete_yes": "Yes, delete",
+    "delete_note":"This action is irreversible",
+    "rename_placeholder":"New title"
+  },
+  "trace_manager": {
+    "select_target": "Select target",
+    "trace": "Trace"
   }
 }

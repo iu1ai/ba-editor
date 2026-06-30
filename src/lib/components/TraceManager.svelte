@@ -1,5 +1,6 @@
 <script>
   import { Crosshair, X, Check } from "lucide-svelte";
+  import { t } from "svelte-i18n";
 
   let { editor } = $props();
 
@@ -102,7 +103,7 @@
     ? 'text-indigo-600'
     : 'text-slate-600'}"
 >
-  {isTracing ? "Select target..." : "Trace"}
+  {isTracing ? $t("trace_manager.select_target") : $t("trace_manager.trace")}
 </button>
 
 {#if isTracing}
